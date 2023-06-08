@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 
 @RestController
@@ -22,16 +23,13 @@ public class GameController {
         rollQuestGame.initializeCharacters(gameCharacters);
         IDice dice = new Dice(6);
 
-        String rtn = "";
-        for(ICharacter character : rollQuestGame.getCharacters()) {
-            List<Integer> rollResults = character.rollDice(dice, 3);
-            rtn += String.format("%s rolled a ", character.getName());
-            for (Integer roll : rollResults) {
-                rtn += String.format("[%s] ", roll);
-            }
-            rtn += "<br>";
-        }
+        final StringBuffer rtn = new StringBuffer();
+        rollQuestGame.getCharacters().stream().forEach((character)->{
+            rtn.append(String.format("%s rolled a ", character.getName()));
+            character.rollDice(dice, 3).stream().forEach(roll-> rtn.append(String.format("[%s] ", roll)));
+            rtn.append("<br>");
+        });
 
-        return rtn;
+        return rtn.toString();
     }
 }
