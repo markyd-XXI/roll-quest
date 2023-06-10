@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 @RestController
@@ -28,23 +26,21 @@ public class GameController {
         IDice dice = new Dice(6);
 
         final StringBuffer rtn = new StringBuffer();
-        rollQuestGame.getCharacters().stream().forEach((character)->{
+        rollQuestGame.getCharacters().forEach((character)->{
             rtn.append(String.format("%s rolled a ", character.getName()));
-            character.rollDice(dice, 3).stream().forEach(roll-> rtn.append(String.format("[%s] ", roll)));
+            character.rollDice(dice, 3).forEach(roll-> rtn.append(String.format("[%s] ", roll)));
             rtn.append("<br>");
         });
 
         GameBoardService gameBoardService = new GameBoardService();
-        GameBoard gameBoard = gameBoardService.generateGameBoard();
+        GameBoard gameBoard = gameBoardService.generateGameBoard(100, 500, 1, 4);
 
-        Map<Node, List<Node>> nodes = gameBoard.getAdjNodes();
+        Map<Node, List<Node>> nodes = gameBoard.getNodes();
         Set<Map.Entry<Node, List<Node>>> nodeSet = nodes.entrySet();
 
-        nodeSet.stream().forEach(nodeListEntry -> {
+        nodeSet.forEach(nodeListEntry -> {
             rtn.append(String.format("Node %s <br>", nodeListEntry.getKey().getLabel()));
-            nodeListEntry.getValue().stream().forEach(node->{
-                rtn.append(String.format("Adj Node %s <br>", node.getLabel()));
-            });
+            nodeListEntry.getValue().forEach(node-> rtn.append(String.format("Adj Node %s <br>", node.getLabel())));
         });
 
         return rtn.toString();

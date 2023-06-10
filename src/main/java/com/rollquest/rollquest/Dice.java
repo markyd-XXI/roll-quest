@@ -22,7 +22,7 @@ public class Dice implements IDice
     {
         List<Integer> rollResults = new ArrayList<>();
 
-        for(int i = 0; i <= numberOfDie; i++)
+        for(int i = 1; i <= numberOfDie; i++)
         {
             Random random = new Random();
 
